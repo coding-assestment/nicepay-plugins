@@ -197,14 +197,14 @@ func CreateRegistration(c echo.Context) error {
 	requestString := registrationReq.toString()
 	resultNicePayRequest, _ := NicePay.ApiRequest(requestString)
 
-	response := BindResponse(resultNicePayRequest)
-	log.Print(response.toString())
+	ResponseNicePay := BindResponse(resultNicePayRequest)
+	log.Print(ResponseNicePay.toString())
 
 	result := struct {
 		/* Request *RegistrationRequest `json:"request"` */
-		Request  interface{} `json:"Request"`
-		Response interface{} `json:"Response"`
-	}{Request: registrationReq, Response: response}
+		Request         interface{} `json:"Request"`
+		ResponseNicePay interface{} `json:"ResponseNicePay"`
+	}{Request: registrationReq, ResponseNicePay: ResponseNicePay}
 
 	return c.JSON(http.StatusCreated, result)
 
