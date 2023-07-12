@@ -123,7 +123,7 @@ func (rr *RegistrationRequest) MakeMerchantToken() {
 	rr.MerchantToken = fmt.Sprintf("%x", bs)
 }
 
-func (rr *RegistrationRequest) ReformatBindedRequest() {
+func (rr *RegistrationRequest) prepareRegistrationReq() {
 	rr.MakeMerchantToken()
 	rr.Description = rr.Description + rr.ReferenceNo
 	rr.GoodsNm = rr.GoodsNm + rr.ReferenceNo
@@ -184,7 +184,7 @@ func CreateRegistration(c echo.Context) error {
 	if err := c.Bind(registrationReq); err != nil {
 		return err
 	}
-	registrationReq.ReformatBindedRequest()
+	registrationReq.prepareRegistrationReq()
 
 	NicePay := nicepay.NewInstance()
 	NicePay.Operation("requestCC")

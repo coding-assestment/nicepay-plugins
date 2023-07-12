@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"nicepay-service/payments"
+	"os"
 	"sync"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -23,58 +26,6 @@ var (
 	defaultResponse map[string]interface{}
 )
 
-//----------
-// Handlers
-//----------
-
-/*
-	 func createUser(c echo.Context) error {
-		lock.Lock()
-		defer lock.Unlock()
-		u := &User{
-			ID: seq,
-		}
-		if err := c.Bind(u); err != nil {
-			return err
-		}
-		users[u.ID] = u
-		seq++
-		return c.JSON(http.StatusCreated, u)
-	}
-
-	func getUser(c echo.Context) error {
-		lock.Lock()
-		defer lock.Unlock()
-		id, _ := strconv.Atoi(c.Param("id"))
-		return c.JSON(http.StatusOK, users[id])
-	}
-
-	func updateUser(c echo.Context) error {
-		lock.Lock()
-		defer lock.Unlock()
-		u := new(User)
-		if err := c.Bind(u); err != nil {
-			return err
-		}
-		id, _ := strconv.Atoi(c.Param("id"))
-		users[id].Name = u.Name
-		return c.JSON(http.StatusOK, users[id])
-	}
-
-	func deleteUser(c echo.Context) error {
-		lock.Lock()
-		defer lock.Unlock()
-		id, _ := strconv.Atoi(c.Param("id"))
-		delete(users, id)
-		return c.NoContent(http.StatusNoContent)
-	}
-
-	func getAllUsers(c echo.Context) error {
-		lock.Lock()
-		defer lock.Unlock()
-		return c.JSON(http.StatusOK, users)
-	}
-*/
 func getAllUsers(c echo.Context) error {
 	lock.Lock()
 	defer lock.Unlock()
@@ -92,71 +43,78 @@ func getAllUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
-// func createRegistration(c echo.Context) error {
-// 	lock.Lock()
-// 	defer lock.Unlock()
-// 	u := &User{
-// 		ID: seq,
-// 	}
-// 	if err := c.Bind(u); err != nil {
-// 		return err
-// 	}
-// 	users[u.ID] = u
-// 	seq++
-// 	return c.JSON(http.StatusCreated, u)
-// }
+type CustomValidator struct {
+	validator *validator.Validate
+}
 
-// func createPayment(c echo.Context) error {
-// 	lock.Lock()
-// 	defer lock.Unlock()
-// 	u := &User{
-// 		ID: seq,
-// 	}
-// 	if err := c.Bind(u); err != nil {
-// 		return err
-// 	}
-// 	users[u.ID] = u
-// 	seq++
-// 	return c.JSON(http.StatusCreated, u)
-// }
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
 
-// func showInquery(c echo.Context) error {
-// 	lock.Lock()
-// 	defer lock.Unlock()
-// 	u := &User{
-// 		ID: seq,
-// 	}
-// 	if err := c.Bind(u); err != nil {
-// 		return err
-// 	}
-// 	users[u.ID] = u
-// 	seq++
-// 	return c.JSON(http.StatusCreated, u)
-// }
+func customErrorHandler(err error, c echo.Context) {
+	report, ok := err.(*echo.HTTPError)
+	if !ok {
+		report = echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	if castedObject, ok := err.(validator.ValidationErrors); ok {
+		for _, err := range castedObject {
+			switch err.Tag() {
+			case "required":
+				report.Message = fmt.Sprintf("%s is required",
+					err.Field())
+			case "email":
+				report.Message = fmt.Sprintf("%s is not valid email",
+					err.Field())
+			case "gte":
+				report.Message = fmt.Sprintf("%s value must be greater than %s",
+					err.Field(), err.Param())
+			case "lte":
+				report.Message = fmt.Sprintf("%s value must be lower than %s",
+					err.Field(), err.Param())
+			}
+
+			break
+		}
+	}
+
+	c.Logger().Error(report)
+	c.JSON(report.Code, report)
+}
 
 func main() {
 	e := echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
 
+	e.HTTPErrorHandler = customErrorHandler
 	// Middleware
+
+	f, err := os.OpenFile("logfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(fmt.Sprintf("error opening file: %v", err))
+	}
+	defer f.Close()
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Output: f,
+	}))
+
+	/*
+		e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
+			c.Logger().Debug(reqBody)
+			c.Logger().Debug(resBody)
+		}))
+	*/
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	// Routes
 	e.GET("/", getAllUsers)
-	/*
-		e.GET("/", getAllUsers)
-		e.GET("/users", getAllUsers)
-		e.POST("/users", createUser)
-		e.GET("/users/:id", getUser)
-		e.PUT("/users/:id", updateUser)
-		e.DELETE("/users/:id", deleteUser) */
-
 	ep := e.Group("/payments")
 	ep.POST("/registration", payments.CreateRegistration)
 	ep.POST("/", payments.CreatePayment)
-	ep.POST("/show-inquery", payments.ShowInquery)
+	ep.POST("/show-inquery", payments.GetInquiry)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1212"))
-	// e.Logger.Fatal(e.Start(":80"))
+
 }

@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/url"
 	"nicepay-service/config"
-	"os"
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
@@ -82,7 +81,7 @@ func (sc *SocketConfig) GetBody() string {
 	return sc.body
 }
 
-func (sc *SocketConfig) ApiRequest(payloads string) ([]byte, string) {
+func (sc *SocketConfig) ApiRequest(payloads string) ([]byte, error) {
 	sc.body = payloads
 
 	tr := &http.Transport{
@@ -131,26 +130,25 @@ func (sc *SocketConfig) ApiRequest(payloads string) ([]byte, string) {
 	//   }`
 	response, err := client.Post(
 		sc.ApiUrl,
-		"application/json; charset=UTF-8",
+		"application/json",
 		bytes.NewBufferString(payloads),
 		// bytes.NewBufferString(test),
 	)
 
 	if err != nil {
 		fmt.Printf("%s", err)
-		os.Exit(1)
+		return []byte{}, err
 	} else {
 		defer response.Body.Close()
 		contents, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			fmt.Printf("%s", err)
-			os.Exit(1)
+			return contents, err
 		}
-
-		return contents, payloads
+		return contents, err
 	}
 
-	return []byte{}, payloads
+	return []byte{}, err
 }
 
 func (sc *SocketConfig) ApiRequestOld() {

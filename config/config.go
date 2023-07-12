@@ -1,10 +1,10 @@
 package config
 
-const TESTING_REQ_URL = "https://dev.nicepay.co.id"
-const NICEPAY_REQ_URL = "https://dev.nicepay.co.id/nicepay/direct/v2/registration"
-const NICEPAY_REQ_CC_URL = "https://dev.nicepay.co.id/nicepay/direct/v2/registration"
-const NICEPAY_CANCEL_URL = "https://dev.nicepay.co.id/nicepay/direct/v2/cancel"
-const NICEPAY_ORDER_STATUS_URL = "https://dev.nicepay.co.id/nicepay/direct/v2/inquiry"
+const TESTING_REQ_URL = "https://staging.nicepay.co.id"
+const NICEPAY_REQ_URL = "https://staging.nicepay.co.id/nicepay/direct/v2/registration"
+const NICEPAY_REQ_CC_URL = "https://staging.nicepay.co.id/nicepay/direct/v2/registration"
+const NICEPAY_CANCEL_URL = "https://staging.nicepay.co.id/nicepay/direct/v2/cancel"
+const NICEPAY_ORDER_STATUS_URL = "https://staging.nicepay.co.id/nicepay/direct/v2/inquiry"
 
 const NICEPAY_IMID = "IONPAYTEST"                                                                                       // Merchant ID
 const NICEPAY_MERCHANT_KEY = "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==" // API Key Merchant Key
