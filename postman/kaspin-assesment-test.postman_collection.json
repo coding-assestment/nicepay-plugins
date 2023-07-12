@@ -1,0 +1,361 @@
+{
+	"info": {
+		"_postman_id": "1f7afdcc-4a9c-4b4b-b4c5-f9849a9b52cd",
+		"name": "kaspin-assesment-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register cc",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json()\r",
+							"if(jsonData.ResponseNicePay){\r",
+							"    pm.environment.set(\"txid\", jsonData.ResponseNicePay.tXid)\r",
+							"    pm.environment.set(\"amt\", jsonData.ResponseNicePay.amt)\r",
+							"    pm.environment.set(\"refNo\", jsonData.ResponseNicePay.referenceNo)\r",
+							"}\r",
+							"if(jsonData.Request){\r",
+							"    pm.environment.set(\"timestampTrx\", jsonData.Request.timeStamp)\r",
+							"    pm.environment.set(\"merTok\", jsonData.Request.merchantToken)\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"amt\": \"230\",\r\n\t\t\"billingAddr\": \"Jl. Jend. Sudirman No. 28\",\r\n\t\t\"billingCity\": \"Jakarta Pusat\",\r\n\t\t\"billingCountry\": \"Indonesia\",\r\n\t\t\"billingEmail\": \"john@example.com\",\r\n\t\t\"billingNm\": \"John Doe\",\r\n\t\t\"billingPhone\": \"082111111111\",\r\n\t\t\"billingPostCd\": \"10210\",\r\n\t\t\"billingState\": \"DKI Jakarta\",\r\n\t\t\"cartData\": \"{}\",\r\n\t\t\"currency\": \"IDR\",\r\n\t\t\"dbProcessUrl\": \"http://httpresponder.com/nicepay\",\r\n\t\t\"deliveryAddr\": \"Jl. Jend. Sudirman No. 28\",\r\n\t\t\"deliveryCity\": \"Jakarta Pusat\",\r\n\t\t\"deliveryCountry\": \"Indonesia\",\r\n\t\t\"deliveryNm\": \"John Doe\",\r\n\t\t\"deliveryPhone\": \"02112345678\",\r\n\t\t\"deliveryPostCd\": \"10210\",\r\n\t\t\"deliveryState\": \"DKI Jakarta\",\r\n\t\t\"description\": \"Payment of Invoice No \",\r\n\t\t\"fee\": \"0\",\r\n\t\t\"goodsNm\": \"Payment of Invoice No NCPAY\",\r\n\t\t\"instmntMon\": \"1\",\r\n\t\t\"instmntType\": \"2\",\r\n\t\t\"notaxAmt\": \"0\",\r\n\t\t\"payMethod\": \"01\",\r\n\t\t\"recurrOpt\": \"1\",\r\n\t\t\"reqDomain\": \"http://localhost/\",\r\n\t\t\"reqDt\": \"20230711\",\r\n\t\t\"reqTm\": \"184732\",\r\n\t\t\"timeStamp\": \"20230711184732\",\r\n\t\t\"userIP\": \"::1\",\r\n\t\t\"vat\": \"0\"\r\n\t  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:1212/payments/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "1212",
+					"path": [
+						"payments",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment cc",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Get Timestamp//",
+							"var moment = require('moment');",
+							"pm.environment.set(\"timestampTrx\", moment().format(\"YYYYMMDDHHMMSS\"));",
+							"var timestampTrx = \"20180123100505\";",
+							"// var timestampTrx = pm.environment.get(\"timestampTrx\");",
+							"",
+							"//Initiate variables//",
+							"var cryptlib = require('crypto-js');",
+							"var iMid = \"IONPAYTEST\";",
+							"var merchantKey = \"33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==\";",
+							"// var txid = \"IONPAYTEST05202006021028475835\";",
+							"// var refNo = \"ord20200602100665\";",
+							"// var amount = \"100\";",
+							"",
+							"var txid = pm.environment.get(\"txid\");",
+							"var refNo = pm.environment.get(\"refNo\");",
+							"var amount = pm.environment.get(\"amt\");",
+							"",
+							"",
+							"//Generate merchantToken//",
+							"var merchantData = timestampTrx+iMid+refNo+amount+merchantKey;",
+							"var merTok = CryptoJS.SHA256(merchantData).toString(CryptoJS.enc.Hex);",
+							"// pm.environment.set(\"merTok\", merTok);",
+							"// pm.environment.set(\"iMid\", iMid);",
+							"// pm.environment.set(\"txid\", txid);",
+							"// pm.environment.set(\"timestampTrx\", timestampTrx);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"url": {
+					"raw": "https://staging.nicepay.co.id/nicepay/direct/v2/payment?timeStamp={{timestampTrx}}&tXid={{txid}}&merchantToken={{merTok}}&cardNo=4543 1111 1111 1111&cardHolderNm=IONPAY NETWORKS&month=12&year=2023&cardExpYymm=2312&tXid={{txid}}&callBackUrl=https://merchant.com/callBackUrl&timeStamp={{timestampTrx}}&merchantToken={{merTok}}&mt={{amt}}",
+					"protocol": "https",
+					"host": [
+						"staging",
+						"nicepay",
+						"co",
+						"id"
+					],
+					"path": [
+						"nicepay",
+						"direct",
+						"v2",
+						"payment"
+					],
+					"query": [
+						{
+							"key": "timeStamp",
+							"value": "{{timestampTrx}}"
+						},
+						{
+							"key": "tXid",
+							"value": "{{txid}}"
+						},
+						{
+							"key": "merchantToken",
+							"value": "{{merTok}}"
+						},
+						{
+							"key": "cardNo",
+							"value": "4543 1111 1111 1111"
+						},
+						{
+							"key": "cardHolderNm",
+							"value": "IONPAY NETWORKS"
+						},
+						{
+							"key": "month",
+							"value": "12"
+						},
+						{
+							"key": "year",
+							"value": "2023"
+						},
+						{
+							"key": "cardExpYymm",
+							"value": "2312"
+						},
+						{
+							"key": "tXid",
+							"value": "{{txid}}"
+						},
+						{
+							"key": "callBackUrl",
+							"value": "https://merchant.com/callBackUrl"
+						},
+						{
+							"key": "timeStamp",
+							"value": "{{timestampTrx}}"
+						},
+						{
+							"key": "merchantToken",
+							"value": "{{merTok}}"
+						},
+						{
+							"key": "mt",
+							"value": "{{amt}}"
+						}
+					]
+				},
+				"description": "<h1> Use this API for CC, OVO, LinkAja, Dana, Kredivo, Akulaku </h1>"
+			},
+			"response": [
+				{
+					"name": "Payment",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"url": {
+							"raw": "https://staging.nicepay.co.id/nicepay/direct/v2/payment?timeStamp={{timestampTrx}}&tXid={{txid}}&merchantToken={{merTok}}&amt={{amt}}&callBackUrl=https://pluto.nicepay.co.id/result",
+							"protocol": "https",
+							"host": [
+								"staging",
+								"nicepay",
+								"co",
+								"id"
+							],
+							"path": [
+								"nicepay",
+								"direct",
+								"v2",
+								"payment"
+							],
+							"query": [
+								{
+									"key": "timeStamp",
+									"value": "{{timestampTrx}}"
+								},
+								{
+									"key": "tXid",
+									"value": "{{txid}}"
+								},
+								{
+									"key": "merchantToken",
+									"value": "{{merTok}}"
+								},
+								{
+									"key": "amt",
+									"value": "{{amt}}"
+								},
+								{
+									"key": "callBackUrl",
+									"value": "https://pluto.nicepay.co.id/result"
+								},
+								{
+									"key": "cardNo",
+									"value": "4111111111111111",
+									"disabled": true
+								},
+								{
+									"key": "cardExpYymm",
+									"value": "2006",
+									"disabled": true
+								},
+								{
+									"key": "cardCvv",
+									"value": "123",
+									"disabled": true
+								},
+								{
+									"key": "cardHolderNm",
+									"value": "Thomas",
+									"disabled": true
+								},
+								{
+									"key": "recurringToken",
+									"value": "9338d54573688ae18e175240b0257de48d89c6ef1c9c7b5c094dc4beed9e435f",
+									"disabled": true
+								},
+								{
+									"key": "preauthToken",
+									"value": "9338d54573688ae18e175240b0257de48d89c6ef1c9c7b5c094dc4beed9e435f",
+									"disabled": true
+								},
+								{
+									"key": "clickPayNo",
+									"value": "1234567890123456",
+									"disabled": true
+								},
+								{
+									"key": "dataField3",
+									"value": "123",
+									"disabled": true
+								},
+								{
+									"key": "clickPayToken",
+									"value": "123456",
+									"disabled": true
+								},
+								{
+									"key": "billingCity",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "200",
+					"code": 200,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 12 Jul 2023 09:02:51 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Access-Control-Allow-Origin,Access-Control-Allow-Credentials"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en-US"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3721"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/html;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "\n\n\n\n\n\n\n\n\n\n\n\n<!-- \n<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 5.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> -->\n<!DOCTYPE html>\n<html>\n    <head>\n        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />\n        <script type=\"text/javascript\" src=\"/nicepay/js/bootstrap.js\"></script>\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"/nicepay/css/bootstrap.css\" />\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"/nicepay/css/bootstrap_backup.css\" />\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"/nicepay/css/bootstrap.min.css\" />\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"/nicepay/css/form.css\" />\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"/nicepay/css/bootstrap-responsive.css\" />\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"/nicepay/css/basic.css\" />\n        <link rel=\"shortcut icon\" href=\"https://www.nicepay.co.id/favicon.ico\" type=\"image/x-icon\" />\n        <link rel=\"icon\" href=\"https://www.nicepay.co.id/favicon.ico\" type=\"image/x-icon\" />\n        <script type=\"text/javascript\" src=\"/nicepay/js/jquery.js\"></script>\n        <script type=\"text/javascript\" src=\"/nicepay/js/jquery.min.js\"></script>\n        <script type=\"text/javascript\" src=\"/nicepay/js/common.js\"></script>\n    </head>\n    <body >\n        <html>\n            <head>\n                <script type = \"text/javascript\">\n\tfunction setAcsInfo(){\n\t\tif ('' != '05') {\n\t\t\tdocument.tranMgr.action = $(\"#callbackUrl\").val();\n\t\t} else if ('' == '05' && '' != null && '' == 'OVOE') {\n\t\t\tdocument.tranMgr.action = $(\"#callbackUrl\").val();\n\t\t}\n\t\t\n\t\tif (document.tranMgr.cardBrand.value == null || document.tranMgr.cardBrand.value == \"\")\n\t\t\tdocument.tranMgr.cardBrand.setAttribute(\"disabled\", true);\n\t\t\n\t\tdocument.tranMgr.submit();\n\t}\n\n</script>\n            </head>\n            <style>\nbody {\n    min-width: 100%;\n    height:auto;\nmin-height: 500px;\noverflow: none;\nborder: none;\nbackground: url(\"/nicepay/images/rotate.gif\") no-repeat center;\n}\n</style>\n            <body onLoad=\"javascript:setAcsInfo();\">\n                <form name=\"tranMgr\" method=\"post\" action=\"\">\n                    <input type=\"hidden\" id=\"callbackUrl\"  value=\"https://pluto.nicepay.co.id/result\">\n                    <input type=\"hidden\" name=\"resultCd\"  value=\"8001\">\n                    <input type=\"hidden\" name=\"resultMsg\" value=\"Order registration error.\">\n                    <input type=\"hidden\" name=\"tXid\" value=\"\">\n                    <input type=\"hidden\" name=\"referenceNo\" value=\"\">\n                    <input type=\"hidden\" name=\"payMethod\" value=\"\">\n                    <input type=\"hidden\" name=\"amt\" value=\"\">\n                    <input type=\"hidden\" name=\"transDt\" value=\"\">\n                    <input type=\"hidden\" name=\"transTm\" value=\"\">\n                    <input type=\"hidden\" name=\"description\" value=\"\">\n                    <input type=\"hidden\" name=\"authNo\" value=\"\">\n                    <input type=\"hidden\" name=\"issuBankCd\" value=\"\">\n                    <input type=\"hidden\" name=\"acquBankCd\" value=\"\">\n                    <input type=\"hidden\" name=\"cardNo\" value=\"\">\n                    <input type=\"hidden\" name=\"receiptCode\" value=\"\">\n                    <input type=\"hidden\" name=\"mitraCd\" value=\"\">\n                    <input type=\"hidden\" name=\"recurringToken\" value=\"\">\n                    <input type=\"hidden\" name=\"preauthToken\" value=\"\">\n                    <input type=\"hidden\" name=\"currency\" value=\"\">\n                    <input type=\"hidden\" name=\"goodsNm\" value=\"\">\n                    <input type=\"hidden\" name=\"billingNm\" value=\"\">\n                    <input type=\"hidden\" name=\"ccTransType\" value=\"\">\n                    <input type=\"hidden\" name=\"mRefNo\" value=\"\">\n                    <input type=\"hidden\" name=\"instmntType\" value=\"\">\n                    <input type=\"hidden\" name=\"instmntMon\" value=\"\">\n                    <input type=\"hidden\" name=\"cardExpYymm\" value=\"\">\n                    <input type=\"hidden\" name=\"issuBankNm\" value=\"\">\n                    <input type=\"hidden\" name=\"acquBankNm\" value=\"\">\n                    <input type=\"hidden\" name=\"timeStamp\" value=\"\">\n                    <input type=\"hidden\" name=\"merchantToken\" value=\"\">\n                    <input type=\"hidden\" name=\"cardBrand\" value=\"\">\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n                </form>\n            </body>\n        </html>\n    </body>\n</html>"
+				}
+			]
+		},
+		{
+			"name": "show inquery",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "{{txid}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n   \"tXid\":\"{{txid}}\",\r\n\t\"referenceNo\":\"{{refNo}}\",\r\n\t\"amt\":\"{{amt}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:1212/payments/show-inquery",
+					"host": [
+						"localhost"
+					],
+					"port": "1212",
+					"path": [
+						"payments",
+						"show-inquery"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
