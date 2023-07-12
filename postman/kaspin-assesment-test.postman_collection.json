@@ -63,8 +63,8 @@
 							"//Get Timestamp//",
 							"var moment = require('moment');",
 							"pm.environment.set(\"timestampTrx\", moment().format(\"YYYYMMDDHHMMSS\"));",
-							"var timestampTrx = \"20180123100505\";",
-							"// var timestampTrx = pm.environment.get(\"timestampTrx\");",
+							"// var timestampTrx = \"20180123100505\";",
+							"var timestampTrx = pm.environment.get(\"timestampTrx\");",
 							"",
 							"//Initiate variables//",
 							"var cryptlib = require('crypto-js');",
@@ -82,7 +82,7 @@
 							"//Generate merchantToken//",
 							"var merchantData = timestampTrx+iMid+refNo+amount+merchantKey;",
 							"var merTok = CryptoJS.SHA256(merchantData).toString(CryptoJS.enc.Hex);",
-							"// pm.environment.set(\"merTok\", merTok);",
+							"pm.environment.set(\"merTok\", merTok);",
 							"// pm.environment.set(\"iMid\", iMid);",
 							"// pm.environment.set(\"txid\", txid);",
 							"// pm.environment.set(\"timestampTrx\", timestampTrx);"
@@ -102,7 +102,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/nicepay/direct/v2/payment?timeStamp={{timestampTrx}}&tXid={{txid}}&merchantToken={{merTok}}&cardNo=4543 1111 1111 1111&cardHolderNm=IONPAY NETWORKS&month=12&year=2023&cardExpYymm=2312&tXid={{txid}}&callBackUrl=https://merchant.com/callBackUrl&timeStamp={{timestampTrx}}&merchantToken={{merTok}}&mt={{amt}}",
+					"raw": "{{url}}/nicepay/direct/v2/payment?payMethod=01&cardNo=4543 1111 1111 1111&cardHolderNm=IONPAY NETWORKS&month=08&year=2023&cardExpYymm=2308&cardCvv=123&tXid={{txid}}&timeStamp={{timestampTrx}}&callBackUrl=http://localhost/nicepay-v2/resultGate.php&merchantToken={{merTok}}&amt={{amt}}",
 					"host": [
 						"{{url}}"
 					],
@@ -114,16 +114,8 @@
 					],
 					"query": [
 						{
-							"key": "timeStamp",
-							"value": "{{timestampTrx}}"
-						},
-						{
-							"key": "tXid",
-							"value": "{{txid}}"
-						},
-						{
-							"key": "merchantToken",
-							"value": "{{merTok}}"
+							"key": "payMethod",
+							"value": "01"
 						},
 						{
 							"key": "cardNo",
@@ -135,7 +127,7 @@
 						},
 						{
 							"key": "month",
-							"value": "12"
+							"value": "08"
 						},
 						{
 							"key": "year",
@@ -143,26 +135,30 @@
 						},
 						{
 							"key": "cardExpYymm",
-							"value": "2312"
+							"value": "2308"
+						},
+						{
+							"key": "cardCvv",
+							"value": "123"
 						},
 						{
 							"key": "tXid",
 							"value": "{{txid}}"
 						},
 						{
-							"key": "callBackUrl",
-							"value": "https://merchant.com/callBackUrl"
-						},
-						{
 							"key": "timeStamp",
 							"value": "{{timestampTrx}}"
+						},
+						{
+							"key": "callBackUrl",
+							"value": "http://localhost/nicepay-v2/resultGate.php"
 						},
 						{
 							"key": "merchantToken",
 							"value": "{{merTok}}"
 						},
 						{
-							"key": "mt",
+							"key": "amt",
 							"value": "{{amt}}"
 						}
 					]
