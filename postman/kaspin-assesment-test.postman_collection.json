@@ -41,11 +41,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:1212/payments/registration",
+					"raw": "{{base_url}}/payments/registration",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "1212",
 					"path": [
 						"payments",
 						"registration"
@@ -103,13 +102,9 @@
 					}
 				],
 				"url": {
-					"raw": "https://staging.nicepay.co.id/nicepay/direct/v2/payment?timeStamp={{timestampTrx}}&tXid={{txid}}&merchantToken={{merTok}}&cardNo=4543 1111 1111 1111&cardHolderNm=IONPAY NETWORKS&month=12&year=2023&cardExpYymm=2312&tXid={{txid}}&callBackUrl=https://merchant.com/callBackUrl&timeStamp={{timestampTrx}}&merchantToken={{merTok}}&mt={{amt}}",
-					"protocol": "https",
+					"raw": "{{url}}/nicepay/direct/v2/payment?timeStamp={{timestampTrx}}&tXid={{txid}}&merchantToken={{merTok}}&cardNo=4543 1111 1111 1111&cardHolderNm=IONPAY NETWORKS&month=12&year=2023&cardExpYymm=2312&tXid={{txid}}&callBackUrl=https://merchant.com/callBackUrl&timeStamp={{timestampTrx}}&merchantToken={{merTok}}&mt={{amt}}",
 					"host": [
-						"staging",
-						"nicepay",
-						"co",
-						"id"
+						"{{url}}"
 					],
 					"path": [
 						"nicepay",
@@ -344,11 +339,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:1212/payments/show-inquery",
+					"raw": "{{base_url}}/payments/show-inquery",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "1212",
 					"path": [
 						"payments",
 						"show-inquery"
