@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"nicepay-service/payments"
 	"os"
@@ -84,26 +87,27 @@ func customErrorHandler(err error, c echo.Context) {
 
 func main() {
 	e := echo.New()
-	e.Validator = &CustomValidator{validator: validator.New()}
 
-	e.HTTPErrorHandler = customErrorHandler
 	// Middleware
+	e.Validator = &CustomValidator{validator: validator.New()}
+	e.HTTPErrorHandler = customErrorHandler
 
-	f, err := os.OpenFile("logfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile("logfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		panic(fmt.Sprintf("error opening file: %v", err))
 	}
-	defer f.Close()
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Output: f,
+	defer logFile.Close()
+	log.SetOutput(logFile)
+
+	e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
+		var jsonb = []byte(reqBody)
+		reqBodyCompact := new(bytes.Buffer)
+		json.Compact(reqBodyCompact, jsonb)
+
+		log.Println("Request :" + reqBodyCompact.String())
+		log.Print("Response :" + string(resBody))
 	}))
 
-	/*
-		e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
-			c.Logger().Debug(reqBody)
-			c.Logger().Debug(resBody)
-		}))
-	*/
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
