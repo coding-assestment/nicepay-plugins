@@ -1,0 +1,70 @@
+$_GETArray
+(
+)
+$_POSTArray
+(
+    [checkPayment] => checkPayment
+    [tXid] => IONPAYTEST01202307121544390194
+    [amt] => 123
+    [referenceNo] => NCPAY-64ae67ea289600.02399925
+    [timeStamp] => 20230712104443
+)
+$this->requestDataArray
+(
+    [timeStamp] => 20230712104539
+    [tXid] => IONPAYTEST01202307121544390194
+    [iMid] => IONPAYTEST
+    [referenceNo] => NCPAY-64ae67ea289600.02399925
+    [amt] => 123
+    [merchantToken] => d4ca5756c18bb5d6e3cdfa4244910ca13a0cd17e734a9dc823e6a8367cf4a81b
+)
+$this->resultDatastdClass Object
+(
+    [tXid] => IONPAYTEST01202307121544390194
+    [iMid] => IONPAYTEST
+    [currency] => IDR
+    [amt] => 123
+    [instmntMon] => 1
+    [instmntType] => 2
+    [referenceNo] => NCPAY-64ae67ea289600.02399925
+    [goodsNm] => Payment of Invoice No NCPAY-64ae67ea289600.02399925
+    [payMethod] => 01
+    [billingNm] => John Doe
+    [reqDt] => 20230712
+    [reqTm] => 154439
+    [status] => 9
+    [resultCd] => 0000
+    [resultMsg] => init
+    [cardNo] => 
+    [preauthToken] => 
+    [acquBankCd] => 
+    [issuBankCd] => 
+    [vacctValidDt] => 
+    [vacctValidTm] => 
+    [vacctNo] => 
+    [bankCd] => 
+    [payNo] => 
+    [mitraCd] => 
+    [receiptCode] => 
+    [cancelAmt] => 
+    [transDt] => 
+    [transTm] => 
+    [recurringToken] => 
+    [ccTransType] => 
+    [payValidDt] => 
+    [payValidTm] => 
+    [mRefNo] => 
+    [acquStatus] => 
+    [cardExpYymm] => 
+    [acquBankNm] => 
+    [issuBankNm] => 
+    [depositDt] => 
+    [depositTm] => 
+    [paymentExpDt] => 
+    [paymentExpTm] => 
+    [paymentTrxSn] => 
+    [cancelTrxSn] => 
+    [userId] => 
+    [shopId] => 
+)
+D:\xampp-win32-7.0.13-1-VC14\xampp\htdocs\nicepay-v2\lib\NicepayLib.php@checkPaymentStatus@174
