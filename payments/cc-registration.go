@@ -3,6 +3,7 @@ package payments
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,20 +18,20 @@ type (
 	RegistrationRequest struct {
 		PayMethod   string `json:"payMethod"`
 		ReferenceNo string `json:"referenceNo"`
-		Amt         string `json:"amt"`
-		InstmntMon  string `json:"instmntMon"`
-		InstmntType string `json:"instmntType"`
+		Amt         string `json:"amt" validate:"required"`
+		InstmntMon  string `json:"instmntMon"  validate:"required"`
+		InstmntType string `json:"instmntType"  validate:"required"`
 
-		Currency        string      `json:"currency"`
+		Currency        string      `json:"currency" validate:"required"`
 		Description     string      `json:"description"`
-		BillingNm       string      `json:"billingNm"`
-		BillingPhone    string      `json:"billingPhone"`
-		BillingEmail    string      `json:"billingEmail"`
-		BillingAddr     string      `json:"billingAddr"`
-		BillingCity     string      `json:"billingCity"`
-		BillingState    string      `json:"billingState"`
-		BillingPostCd   string      `json:"billingPostCd"`
-		BillingCountry  string      `json:"billingCountry"`
+		BillingNm       string      `json:"billingNm" validate:"required"`
+		BillingPhone    string      `json:"billingPhone" validate:"required"`
+		BillingEmail    string      `json:"billingEmail" validate:"required"`
+		BillingAddr     string      `json:"billingAddr" validate:"required"`
+		BillingCity     string      `json:"billingCity" validate:"required"`
+		BillingState    string      `json:"billingState"  validate:"required"`
+		BillingPostCd   string      `json:"billingPostCd"  validate:"required"`
+		BillingCountry  string      `json:"billingCountry" validate:"required"`
 		DeliveryNm      string      `json:"deliveryNm"`
 		DeliveryPhone   string      `json:"deliveryPhone"`
 		DeliveryAddr    string      `json:"deliveryAddr"`
@@ -38,7 +39,7 @@ type (
 		DeliveryState   string      `json:"deliveryState"`
 		DeliveryPostCd  string      `json:"deliveryPostCd"`
 		DeliveryCountry string      `json:"deliveryCountry"`
-		RecurrOpt       string      `json:"recurrOpt"`
+		RecurrOpt       string      `json:"recurrOpt"  validate:"required"`
 		TimeStamp       string      `json:"timeStamp"`
 		ReqDt           string      `json:"reqDt"`
 		ReqTm           string      `json:"reqTm"`
@@ -46,12 +47,12 @@ type (
 		MerchantToken   string      `json:"merchantToken"`
 		DbProcessUrl    string      `json:"dbProcessUrl"`
 		UserIP          string      `json:"userIP"`
-		GoodsNm         string      `json:"goodsNm"`
+		GoodsNm         string      `json:"goodsNm" validate:"required"`
 		NotaxAmt        string      `json:"notaxAmt"`
 		ReqDomain       string      `json:"reqDomain"`
 		Fee             string      `json:"fee"`
 		Vat             string      `json:"vat"`
-		CartData        interface{} `json:"cartData"`
+		CartData        interface{} `json:"cartData"  validate:"required"`
 	}
 
 	RegistrationResponse struct {
@@ -141,27 +142,36 @@ func (rr *RegistrationRequest) prepareRegistrationReq() {
 
 	formattedTime := fmt.Sprintf("%02d%02d%02d", t.Hour(), t.Minute(), t.Second())
 	rr.ReqTm = formattedTime
+
+	rr.PayMethod = "01" // for cc
 }
 
 func NewRegistrationRequest() *RegistrationRequest {
+	/* default / template value */
 	return &RegistrationRequest{
-		PayMethod:   "01",
-		ReferenceNo: "NCPAY-",
-		Amt:         "600",
-		InstmntMon:  "1",
-		InstmntType: "2",
+		/*  data required*/
+		/*
+			Amt:         "600",
+			InstmntMon:  "1",
+			InstmntType: "2",
 
-		/* default / template value */
-		Currency:        "IDR",
+			Currency:        "IDR",
+			BillingNm:       "John Doe",
+			BillingPhone:    "082111111111",
+			BillingEmail:    "john@example.com",
+			BillingAddr:     "Jl. Jend. Sudirman No. 28",
+			BillingCity:     "Jakarta Pusat",
+			BillingState:    "DKI Jakarta",
+			BillingPostCd:   "10210",
+			BillingCountry:  "Indonesia",
+			RecurrOpt:       "1",
+			CartData:      "{}",
+		*/
+		/* data optional */
+		PayMethod:       "01",
+		ReferenceNo:     "NCPAY-",
 		Description:     "Payment of Invoice No ",
-		BillingNm:       "John Doe",
-		BillingPhone:    "082111111111",
-		BillingEmail:    "john@example.com",
-		BillingAddr:     "Jl. Jend. Sudirman No. 28",
-		BillingCity:     "Jakarta Pusat",
-		BillingState:    "DKI Jakarta",
-		BillingPostCd:   "10210",
-		BillingCountry:  "Indonesia",
+		GoodsNm:         "Payment of Invoice No ",
 		DeliveryNm:      "John Doe",
 		DeliveryPhone:   "02112345678",
 		DeliveryAddr:    "Jl. Jend. Sudirman No. 28",
@@ -169,7 +179,6 @@ func NewRegistrationRequest() *RegistrationRequest {
 		DeliveryState:   "DKI Jakarta",
 		DeliveryPostCd:  "10210",
 		DeliveryCountry: "Indonesia",
-		RecurrOpt:       "1",
 		TimeStamp:       "",
 		ReqDt:           "",
 		ReqTm:           "",
@@ -177,7 +186,6 @@ func NewRegistrationRequest() *RegistrationRequest {
 		MerchantToken:   "",
 		DbProcessUrl:    "http://httpresponder.com/nicepay",
 		UserIP:          "::1",
-		GoodsNm:         "Payment of Invoice No ",
 		NotaxAmt:        "0",
 		ReqDomain:       "http://localhost/",
 		Fee:             "0",
@@ -190,6 +198,13 @@ func CreateRegistration(c echo.Context) error {
 	if err := c.Bind(registrationReq); err != nil {
 		return err
 	}
+	if err := c.Validate(registrationReq); err != nil {
+		c.Logger().Error(err)
+		log.Println("Registration validation Failed : " + err.Error())
+		log.Print("NicePay Request Iquiry: " + registrationReq.toString())
+		return err
+	}
+
 	registrationReq.prepareRegistrationReq()
 
 	NicePay := nicepay.NewInstance()
@@ -197,14 +212,24 @@ func CreateRegistration(c echo.Context) error {
 	requestString := registrationReq.toString()
 	resultNicePayRequest, _ := NicePay.ApiRequest(requestString)
 
-	ResponseNicePay := BindResponse(resultNicePayRequest)
-	log.Print(ResponseNicePay.toString())
+	responseNicePay := BindResponse(resultNicePayRequest)
 
 	result := struct {
 		/* Request *RegistrationRequest `json:"request"` */
 		Request         interface{} `json:"Request"`
 		ResponseNicePay interface{} `json:"ResponseNicePay"`
-	}{Request: registrationReq, ResponseNicePay: ResponseNicePay}
+	}{Request: registrationReq, ResponseNicePay: responseNicePay}
+
+	if responseNicePay.ResultCd == "0000" {
+		c.Logger().Info("Registration Success")
+		log.Println("Registration Success: " + responseNicePay.toString())
+	} else {
+		c.Logger().Error(errors.New("Registration Failed"))
+		log.Println("Registration Failed: " + responseNicePay.toString())
+	}
+
+	log.Print("NicePay Request Iquiry: " + registrationReq.toString())
+	log.Print("NicePay Response Iquiry: " + responseNicePay.toString())
 
 	return c.JSON(http.StatusCreated, result)
 

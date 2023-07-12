@@ -96,6 +96,10 @@ func main() {
 	}
 	defer logFile.Close()
 	log.SetOutput(logFile)
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "uri=${uri}, method=${method}, status=${status}\n",
+		Output: logFile,
+	}))
 
 	e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
 		/* var jsonb = []byte(reqBody)
@@ -106,7 +110,8 @@ func main() {
 		log.Print("Response :" + string(resBody)) */
 	}))
 
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
+
 	e.Use(middleware.Recover())
 
 	// Routes

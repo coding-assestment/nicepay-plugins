@@ -24,7 +24,7 @@ type (
 		MerchantToken string `json:"merchantToken"`
 	}
 
-	InquiryResponse struct {
+	InquiryNicePayResponse struct {
 		TXid           string `json:"tXid"`
 		IMid           string `json:"iMid"`
 		Currency       string `json:"currency"`
@@ -73,16 +73,38 @@ type (
 		ShopId         string `json:"shopId"`
 		AuthNo         string `json:"authNo"`
 	}
+	InqueryResponse struct {
+		TXid        string `json:"tXid,omitempty"`
+		ReqDt       string `json:"reqDt,omitempty"`
+		ReqTm       string `json:"reqTm,omitempty"`
+		TransDt     string `json:"transDt,omitempty"`
+		TransTm     string `json:"transTm,omitempty"`
+		ResultCd    string `json:"resultCd,omitempty"`
+		ResultMsg   string `json:"resultMsg,omitempty"`
+		Amt         string `json:"amt,omitempty"`
+		ReferenceNo string `json:"referenceNo,omitempty"`
+	}
 )
 
-func (response *InquiryResponse) toString() string {
+func NewInquiryResponse(data []byte, txid string, refNo string) *InqueryResponse {
+	var response *InqueryResponse
+	json.Unmarshal([]byte(data), &response)
+	response.TXid = txid
+	response.ReferenceNo = refNo
+	return response
+}
+
+func (response *InquiryNicePayResponse) toString() string {
+	data, _ := json.Marshal(response)
+	return string(data)
+}
+func (response *InqueryResponse) toString() string {
 	data, _ := json.Marshal(response)
 	return string(data)
 }
 
-func BindResponseInquiry(data []byte) *InquiryResponse {
-	var response *InquiryResponse
-	/*var defaultResponse map[string]interface{} */
+func BindResponseInquiry(data []byte) *InquiryNicePayResponse {
+	var response *InquiryNicePayResponse
 	json.Unmarshal([]byte(data), &response)
 	return response
 }
@@ -134,6 +156,8 @@ func GetInquiry(c echo.Context) error {
 	if err := c.Bind(inquiryRequest); err != nil {
 		return err
 	}
+	ClientRequest := inquiryRequest
+	log.Println(ClientRequest)
 	inquiryRequest.prepareInqueryReq()
 
 	if err := c.Validate(inquiryRequest); err != nil {
@@ -142,16 +166,26 @@ func GetInquiry(c echo.Context) error {
 
 	NicePay := nicepay.NewInstance()
 	NicePay.Operation("checkPaymentStatus")
-	requestString := inquiryRequest.toString()
-	resultNicePayRequest, _ := NicePay.ApiRequest(requestString)
+	nicePayStringRequest := inquiryRequest.toString()
+	resultNicePayRequest, _ := NicePay.ApiRequest(nicePayStringRequest)
 
-	response := BindResponseInquiry(resultNicePayRequest)
-	log.Print(response.toString())
+	nicePayResponse := BindResponseInquiry(resultNicePayRequest)
+	response := NewInquiryResponse(resultNicePayRequest, inquiryRequest.TXid, inquiryRequest.ReferenceNo)
 
 	result := struct {
-		Request  interface{} `json:"Request"`
-		Response interface{} `json:"Response"`
-	}{Request: inquiryRequest, Response: response}
+		ClientRequest        interface{} `json:"ClientRequest,omitempty"`
+		NicePayStringRequest interface{} `json:"NicePayStringRequest,omitempty"`
+		NicePayResponse      interface{} `json:"NicePayResponse,omitempty"`
+		Response             interface{} `json:"Response,omitempty"`
+	}{ClientRequest: ClientRequest, NicePayStringRequest: nicePayStringRequest, NicePayResponse: nicePayResponse, Response: response}
+
+	if response.ResultCd == "0000" {
+		log.Println("Success Iquiry: " + response.toString())
+	} else {
+		log.Println("Failed Iquiry: " + response.toString())
+	}
+	log.Print("NicePay Request Iquiry: " + ClientRequest.toString())
+	log.Print("NicePay Response Iquiry: " + nicePayResponse.toString())
 
 	return c.JSON(http.StatusCreated, result)
 
