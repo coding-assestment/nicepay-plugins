@@ -1,0 +1,127 @@
+string(5) "$_GET"
+array(0) {
+}
+string(6) "$_POST"
+array(4) {
+  ["checkPayment"]=>
+  string(12) "checkPayment"
+  ["tXid"]=>
+  string(30) "IONPAYTEST01202307111659017296"
+  ["amt"]=>
+  string(3) "600"
+  ["referenceNo"]=>
+  string(29) "NCPAY-64ad255822d0c3.55856512"
+}
+string(18) "$this->requestData"
+array(6) {
+  ["timeStamp"]=>
+  string(14) "20230711115918"
+  ["tXid"]=>
+  string(30) "IONPAYTEST01202307111659017296"
+  ["iMid"]=>
+  string(10) "IONPAYTEST"
+  ["referenceNo"]=>
+  string(29) "NCPAY-64ad255822d0c3.55856512"
+  ["amt"]=>
+  string(3) "600"
+  ["merchantToken"]=>
+  string(64) "a0955b80f9e66eddcf7d0892fbfe819da8bd10863a88fa1ec82868213eedab2e"
+}
+string(17) "$this->resultData"
+object(stdClass)#5 (47) {
+  ["tXid"]=>
+  string(30) "IONPAYTEST01202307111659017296"
+  ["iMid"]=>
+  string(10) "IONPAYTEST"
+  ["currency"]=>
+  string(3) "IDR"
+  ["amt"]=>
+  string(3) "600"
+  ["instmntMon"]=>
+  string(1) "1"
+  ["instmntType"]=>
+  string(1) "2"
+  ["referenceNo"]=>
+  string(29) "NCPAY-64ad255822d0c3.55856512"
+  ["goodsNm"]=>
+  string(51) "Payment of Invoice No NCPAY-64ad255822d0c3.55856512"
+  ["payMethod"]=>
+  string(2) "01"
+  ["billingNm"]=>
+  string(8) "John Doe"
+  ["reqDt"]=>
+  string(8) "20230711"
+  ["reqTm"]=>
+  string(6) "165901"
+  ["status"]=>
+  string(1) "0"
+  ["resultCd"]=>
+  string(4) "0000"
+  ["resultMsg"]=>
+  string(4) "paid"
+  ["cardNo"]=>
+  string(16) "45431111****1111"
+  ["preauthToken"]=>
+  NULL
+  ["acquBankCd"]=>
+  string(4) "BMRI"
+  ["issuBankCd"]=>
+  string(4) "OTHR"
+  ["vacctValidDt"]=>
+  NULL
+  ["vacctValidTm"]=>
+  NULL
+  ["vacctNo"]=>
+  NULL
+  ["bankCd"]=>
+  NULL
+  ["payNo"]=>
+  NULL
+  ["mitraCd"]=>
+  NULL
+  ["receiptCode"]=>
+  NULL
+  ["cancelAmt"]=>
+  NULL
+  ["transDt"]=>
+  string(8) "20230711"
+  ["transTm"]=>
+  string(6) "165901"
+  ["recurringToken"]=>
+  NULL
+  ["ccTransType"]=>
+  string(1) "1"
+  ["payValidDt"]=>
+  NULL
+  ["payValidTm"]=>
+  NULL
+  ["mRefNo"]=>
+  NULL
+  ["acquStatus"]=>
+  string(2) "10"
+  ["cardExpYymm"]=>
+  string(4) "2309"
+  ["acquBankNm"]=>
+  string(7) "Mandiri"
+  ["issuBankNm"]=>
+  string(5) "OTHER"
+  ["depositDt"]=>
+  NULL
+  ["depositTm"]=>
+  NULL
+  ["paymentExpDt"]=>
+  NULL
+  ["paymentExpTm"]=>
+  NULL
+  ["paymentTrxSn"]=>
+  NULL
+  ["cancelTrxSn"]=>
+  NULL
+  ["userId"]=>
+  NULL
+  ["shopId"]=>
+  NULL
+  ["authNo"]=>
+  string(6) "017296"
+}
+D:\xampp-win32-7.0.13-1-VC14\xampp\htdocs\nicepay-v2\lib\NicepayLib.php@checkPaymentStatus@174

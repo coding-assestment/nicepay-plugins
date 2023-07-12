@@ -1,0 +1,112 @@
+
+Notice: Undefined index: phoneNumber in D:\xampp-win32-7.0.13-1-VC14\xampp\htdocs\nicepay-v2\checkout.php on line 54
+string(13) "$this->apiUrl"
+string(60) "https://staging.nicepay.co.id/nicepay/direct/v2/registration"
+string(6) "$_POST"
+array(5) {
+  ["payMethod"]=> "01"
+  ["referenceNo"]=> "NCPAY-64ad2d248b9812.48363623"
+  ["amt"]=> "600"
+  ["instmntMon"]=> "1"
+  ["instmntType"]=> "2"
+}
+string(5) "$data"
+array(36) {
+  PayMethod:  "01",
+  Currency:  "IDR",
+  ReferenceNo:  "NCPAY-64ad2d248b9812.48363623",
+  Amt:  "600",
+  Description:  "Payment of Invoice No NCPAY-64ad2d248b9812.48363623",
+  BillingNm:  "John Doe",
+  BillingPhone:  "082111111111",
+  BillingEmail:  "john@example.com",
+  BillingAddr:  "Jl. Jend. Sudirman No. 28",
+  BillingCity:  "Jakarta Pusat",
+  BillingState:  "DKI Jakarta",
+  BillingPostCd:  "10210",
+  BillingCountry:  "Indonesia",
+  DeliveryNm:  "John Doe",
+  DeliveryPhone:  "02112345678",
+  DeliveryAddr:  "Jl. Jend. Sudirman No. 28",
+  DeliveryCity:  "Jakarta Pusat",
+  DeliveryState:  "DKI Jakarta",
+  DeliveryPostCd:  "10210",
+  DeliveryCountry:  "Indonesia",
+  InstmntType:  "2",
+  InstmntMon:  "1",
+  RecurrOpt:  "1",
+  TimeStamp:  "20230711122729",
+  ReqDt:  "20230711",
+  ReqTm:  "122729",
+  IMid:  "IONPAYTEST",
+  MerchantToken:  "9bc3f32970ccfc3dcea0efe52795636e6986d5883d428e47b2a350377f1c3fef",
+  DbProcessUrl:  "http://httpresponder.com/nicepay",
+  UserIP:  "::1",
+  GoodsNm:  "Payment of Invoice No NCPAY-64ad2d248b9812.48363623",
+  NotaxAmt:  "0",
+  ReqDomain:  "http://localhost/",
+  Fee:  "0",
+  Vat:  "0",
+  ["cartData"]=>
+  string(538) "{"count": "1","item": [{"img_url": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone11-select-2019-family?wid=882&hei=1058&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1567022175704","goods_name": " iPhone 11 ","goods_detail": "A new dual‑camera system captures more of what you see and love. The fastest chip ever in a smartphone and all‑day battery life let you do more and charge less. And the highest‑quality video in a smartphone, so your memories look better than ever.","goods_amt":"600"}]}"
+}
+string(13) "$this->apiUrl"
+string(60) "https://staging.nicepay.co.id/nicepay/direct/v2/registration"
+string(9) "$postdata"
+string(1625) "{"payMethod":"01","currency":"IDR","referenceNo":"NCPAY-64ad2d248b9812.48363623","amt":"600","description":"Payment of Invoice No NCPAY-64ad2d248b9812.48363623","billingNm":"John Doe","billingPhone":"082111111111","billingEmail":"john@example.com","billingAddr":"Jl. Jend. Sudirman No. 28","billingCity":"Jakarta Pusat","billingState":"DKI Jakarta","billingPostCd":"10210","billingCountry":"Indonesia","deliveryNm":"John Doe","deliveryPhone":"02112345678","deliveryAddr":"Jl. Jend. Sudirman No. 28","deliveryCity":"Jakarta Pusat","deliveryState":"DKI Jakarta","deliveryPostCd":"10210","deliveryCountry":"Indonesia","instmntType":"2","instmntMon":"1","recurrOpt":"1","timeStamp":"20230711122729","reqDt":"20230711","reqTm":"122729","iMid":"IONPAYTEST","merchantToken":"9bc3f32970ccfc3dcea0efe52795636e6986d5883d428e47b2a350377f1c3fef","dbProcessUrl":"http:\/\/httpresponder.com\/nicepay","userIP":"::1","goodsNm":"Payment of Invoice No NCPAY-64ad2d248b9812.48363623","notaxAmt":"0","reqDomain":"http:\/\/localhost\/","fee":"0","vat":"0","cartData":"{\"count\": \"1\",\"item\": [{\"img_url\": \"https:\/\/store.storeimages.cdn-apple.com\/4982\/as-images.apple.com\/is\/iphone11-select-2019-family?wid=882&hei=1058&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1567022175704\",\"goods_name\": \" iPhone 11 \",\"goods_detail\": \"A new dual\u2011camera system captures more of what you see and love. The fastest chip ever in a smartphone and all\u2011day battery life let you do more and charge less. And the highest\u2011quality video in a smartphone, so your memories look better than ever.\",\"goods_amt\":\"600\"}]}"}"
+string(31) "$this->parseResult($this->body)"
+object(stdClass)#5 (25) {
+  ["resultCd"]=>
+  string(4) "0000"
+  ["resultMsg"]=>
+  string(7) "SUCCESS"
+  ["tXid"]=>
+  string(30) "IONPAYTEST01202307111727295742"
+  ["referenceNo"]=>
+  string(29) "NCPAY-64ad2d248b9812.48363623"
+  ["payMethod"]=>
+  string(2) "01"
+  ["amt"]=>
+  string(3) "600"
+  ["transDt"]=>
+  string(8) "20230711"
+  ["transTm"]=>
+  string(6) "172729"
+  ["description"]=>
+  string(51) "Payment of Invoice No NCPAY-64ad2d248b9812.48363623"
+  ["bankCd"]=>
+  NULL
+  ["vacctNo"]=>
+  NULL
+  ["mitraCd"]=>
+  NULL
+  ["payNo"]=>
+  NULL
+  ["currency"]=>
+  NULL
+  ["goodsNm"]=>
+  NULL
+  ["billingNm"]=>
+  NULL
+  ["vacctValidDt"]=>
+  NULL
+  ["vacctValidTm"]=>
+  NULL
+  ["payValidDt"]=>
+  NULL
+  ["payValidTm"]=>
+  NULL
+  ["requestURL"]=>
+  NULL
+  ["paymentExpDt"]=>
+  NULL
+  ["paymentExpTm"]=>
+  NULL
+  ["qrContent"]=>
+  NULL
+  ["qrUrl"]=>
+  NULL
+}
+debug_print_backtrace()#0  NicepayRequestor->apiRequest(Array ([payMethod] => 01,[currency] => IDR,[referenceNo] => NCPAY-64ad2d248b9812.48363623,[amt] => 600,[description] => Payment of Invoice No NCPAY-64ad2d248b9812.48363623,[billingNm] => John Doe,[billingPhone] => 082111111111,[billingEmail] => john@example.com,[billingAddr] => Jl. Jend. Sudirman No. 28,[billingCity] => Jakarta Pusat,[billingState] => DKI Jakarta,[billingPostCd] => 10210,[billingCountry] => Indonesia,[deliveryNm] => John Doe,[deliveryPhone] => 02112345678,[deliveryAddr] => Jl. Jend. Sudirman No. 28,[deliveryCity] => Jakarta Pusat,[deliveryState] => DKI Jakarta,[deliveryPostCd] => 10210,[deliveryCountry] => Indonesia,[instmntType] => 2,[instmntMon] => 1,[recurrOpt] => 1,[timeStamp] => 20230711122729,[reqDt] => 20230711,[reqTm] => 122729,[iMid] => IONPAYTEST,[merchantToken] => 9bc3f32970ccfc3dcea0efe52795636e6986d5883d428e47b2a350377f1c3fef,[dbProcessUrl] => http://httpresponder.com/nicepay,[userIP] => ::1,[goodsNm] => Payment of Invoice No NCPAY-64ad2d248b9812.48363623,[notaxAmt] => 0,[reqDomain] => http://localhost/,[fee] => 0,[vat] => 0,[cartData] => {"count": "1","item": [{"img_url": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone11-select-2019-family?wid=882&hei=1058&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1567022175704","goods_name": " iPhone 11 ","goods_detail": "A new dual‑camera system captures more of what you see and love. The fastest chip ever in a smartphone and all‑day battery life let you do more and charge less. And the highest‑quality video in a smartphone, so your memories look better than ever.","goods_amt":"600"}]})) called at [D:\xampp-win32-7.0.13-1-VC14\xampp\htdocs\nicepay-v2\lib\NicepayLib.php:129]
+#1  NicepayLib->chargeCard() called at [D:\xampp-win32-7.0.13-1-VC14\xampp\htdocs\nicepay-v2\checkout.php:89]
+D:\xampp-win32-7.0.13-1-VC14\xampp\htdocs\nicepay-v2\lib\NicepayRequestor.php@apiRequest@186
