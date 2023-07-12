@@ -6,13 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
 	"net/url"
 	"nicepay-service/config"
 	"strings"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type (
@@ -89,45 +86,18 @@ func (sc *SocketConfig) ApiRequest(payloads string) ([]byte, error) {
 	}
 
 	client := &http.Client{Transport: tr}
-	// fmt.Println(payloads)
-	// test := `{
-	// 	"amt": "15000",
-	// 	"billingAddr": "Jl. Jend. Sudirman No. 28",
-	// 	"billingCity": "Jakarta Pusat",
-	// 	"billingCountry": "Indonesia",
-	// 	"billingEmail": "john@example.com",
-	// 	"billingNm": "John Doe",
-	// 	"billingPhone": "082111111111",
-	// 	"billingPostCd": "10210",
-	// 	"billingState": "DKI Jakarta",
-	// 	"cartData": "{\"count\": \"1\",\"item\": [{\"img_url\": \"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone11-select-2019-family?wid=882&hei=1058&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1567022175704\",\"goods_name\": \" iPhone 11 \",\"goods_detail\": \"A new dual‑camera system captures more of what you see and love. The fastest chip ever in a smartphone and all‑day battery life let you do more and charge less. And the highest‑quality video in a smartphone, so your memories look better than ever.\",\"goods_amt\":\"15000\"}]}",
-	// 	"currency": "IDR",
-	// 	"dbProcessUrl": "http://httpresponder.com/nicepay",
-	// 	"deliveryAddr": "Jl. Jend. Sudirman No. 28",
-	// 	"deliveryCity": "Jakarta Pusat",
-	// 	"deliveryCountry": "Indonesia",
-	// 	"deliveryNm": "John Doe",
-	// 	"deliveryPhone": "02112345678",
-	// 	"deliveryPostCd": "10210",
-	// 	"deliveryState": "DKI Jakarta",
-	// 	"description": "Payment of Invoice No NCPAY-64ad872fc76ec4.25417383",
-	// 	"fee": "0",
-	// 	"goodsNm": "Payment of Invoice No NCPAY-64ad872fc76ec4.25417383",
-	// 	"iMid": "IONPAYTEST",
-	// 	"instmntMon": "1",
-	// 	"instmntType": "2",
-	// 	"merchantToken": "09b1f556e9537d2997cd545f8fd1e834edcf86e6a505c494243d76853b774c16",
-	// 	"notaxAmt": "0",
-	// 	"payMethod": "01",
-	// 	"recurrOpt": "1",
-	// 	"referenceNo": "NCPAY-64ad872fc76ec4.25417383",
-	// 	"reqDomain": "http://localhost/",
-	// 	"reqDt": "20230711",
-	// 	"reqTm": "184732",
-	// 	"timeStamp": "20230711184732",
-	// 	"userIP": "::1",
-	// 	"vat": "0"
-	//   }`
+	/*
+		fmt.Println(payloads)
+		test := `{
+		    "tXid": "IONPAYTEST01202307121544390194",
+		    "amt": "123",
+		    "referenceNo": "NCPAY-64ae67ea289600.02399925",
+		    "timeStamp": "20230712105506",
+		    "iMid": "IONPAYTEST",
+		    "merchantToken": "2748eb990d8aa494226509f5d1e1397e48fe68f8ff5313f58bbde99d9ae5931f"
+		}`
+	*/
+	fmt.Println(payloads)
 	response, err := client.Post(
 		sc.ApiUrl,
 		"application/json",
@@ -149,52 +119,6 @@ func (sc *SocketConfig) ApiRequest(payloads string) ([]byte, error) {
 	}
 
 	return []byte{}, err
-}
-
-func (sc *SocketConfig) ApiRequestOld() {
-
-	// con, err := net.Dial("tcp", sc.ApiUrl+":"+sc.Port)
-	spew.Dump(fmt.Sprintf("%s:%d", sc.ApiUrl, sc.Port))
-
-	// con, err := net.Dial("tcp", fmt.Sprintf("%s:%d", sc.getHost(), sc.Port))
-	// con, err := net.Dial("tcp", sc.ApiUrl)
-	// con, err := net.Dial("tcp", "webcode.me:80")
-	con, err := net.Dial("tcp", "dev.nicepay.co.id:443")
-	checkError(err)
-
-	req := "POST / HTTP/1.0\r\n" +
-		// "Host: " + sc.getHost() + "\r\n" +
-		"Host: " + "dev.nicepay.co.id" + "\r\n" +
-		"Path: " + "/nicepay/direct/v2/registration" + "\r\n" +
-		"User-Agent: Go client\r\n\r\n" +
-		"Connection: close\r\n" +
-		"Content-type: application/json\r\n" +
-		"Content-length: 0\r\n" +
-		"Accept: */*\r\n" +
-		"{} \r\n" +
-		"\r\n"
-
-	// req := "GET / HTTP/1.0\r\n" +
-	// 	"Host: webcode.me\r\n" +
-	// 	"User-Agent: Go client\r\n\r\n"
-
-	// req := "POST " . $uri . " HTTP/1.0\r\n";
-	// $request .= "Connection: close\r\n";
-	// $request .= "Host: " . $host . "\r\n";
-	// $request .= "Content-type: application/json\r\n";
-	// $request .= "Content-length: " . strlen ( $postdata ) . "\r\n";
-	// $request .= "Accept: */*\r\n";
-	// $request .= "\r\n";
-	// $request .= $postdata . "\r\n";
-	// $request .= "\r\n";
-
-	_, err = con.Write([]byte(req))
-	checkError(err)
-
-	res, err := ioutil.ReadAll(con)
-	checkError(err)
-
-	fmt.Println(string(res))
 }
 
 func checkError(err error) {
