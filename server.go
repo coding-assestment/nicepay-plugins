@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -92,7 +90,7 @@ func main() {
 	e.Validator = &CustomValidator{validator: validator.New()}
 	e.HTTPErrorHandler = customErrorHandler
 
-	logFile, err := os.OpenFile("logfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile("nicepay-log.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		panic(fmt.Sprintf("error opening file: %v", err))
 	}
@@ -100,12 +98,12 @@ func main() {
 	log.SetOutput(logFile)
 
 	e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
-		var jsonb = []byte(reqBody)
+		/* var jsonb = []byte(reqBody)
 		reqBodyCompact := new(bytes.Buffer)
 		json.Compact(reqBodyCompact, jsonb)
 
 		log.Println("Request :" + reqBodyCompact.String())
-		log.Print("Response :" + string(resBody))
+		log.Print("Response :" + string(resBody)) */
 	}))
 
 	e.Use(middleware.Logger())

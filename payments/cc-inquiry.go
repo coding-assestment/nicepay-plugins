@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"nicepay-service/config"
 	"nicepay-service/nicepay"
@@ -74,6 +75,11 @@ type (
 	}
 )
 
+func (response *InquiryResponse) toString() string {
+	data, _ := json.Marshal(response)
+	return string(data)
+}
+
 func BindResponseInquiry(data []byte) *InquiryResponse {
 	var response *InquiryResponse
 	/*var defaultResponse map[string]interface{} */
@@ -81,9 +87,9 @@ func BindResponseInquiry(data []byte) *InquiryResponse {
 	return response
 }
 
-func (rr *InquiryRequest) toString() (string, error) {
-	data, err := json.Marshal(rr)
-	return string(data), err
+func (rr *InquiryRequest) toString() string {
+	data, _ := json.Marshal(rr)
+	return string(data)
 }
 
 func (rr *InquiryRequest) setTimeStamp() {
@@ -136,10 +142,11 @@ func GetInquiry(c echo.Context) error {
 
 	NicePay := nicepay.NewInstance()
 	NicePay.Operation("checkPaymentStatus")
-	requestString, _ := inquiryRequest.toString()
+	requestString := inquiryRequest.toString()
 	resultNicePayRequest, _ := NicePay.ApiRequest(requestString)
 
 	response := BindResponseInquiry(resultNicePayRequest)
+	log.Print(response.toString())
 
 	result := struct {
 		Request  interface{} `json:"Request"`

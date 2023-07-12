@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"nicepay-service/config"
 	"nicepay-service/nicepay"
@@ -82,6 +83,11 @@ type (
 	}
 )
 
+func (response *RegistrationResponse) toString() string {
+	data, _ := json.Marshal(response)
+	return string(data)
+}
+
 func BindResponse(data []byte) *RegistrationResponse {
 	var response *RegistrationResponse
 	/*var defaultResponse map[string]interface{} */
@@ -89,9 +95,9 @@ func BindResponse(data []byte) *RegistrationResponse {
 	return response
 }
 
-func (rr *RegistrationRequest) toString() (string, error) {
-	data, err := json.Marshal(rr)
-	return string(data), err
+func (rr *RegistrationRequest) toString() string {
+	data, _ := json.Marshal(rr)
+	return string(data)
 }
 
 func (rr *RegistrationRequest) makeUniqRefNumber() {
@@ -188,10 +194,11 @@ func CreateRegistration(c echo.Context) error {
 
 	NicePay := nicepay.NewInstance()
 	NicePay.Operation("requestCC")
-	requestString, _ := registrationReq.toString()
+	requestString := registrationReq.toString()
 	resultNicePayRequest, _ := NicePay.ApiRequest(requestString)
 
 	response := BindResponse(resultNicePayRequest)
+	log.Print(response.toString())
 
 	result := struct {
 		/* Request *RegistrationRequest `json:"request"` */
